@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vote — Voting System</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f0f2f5;
+            color: #333;
+            padding: 2rem;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 600px;
+            margin: 0 auto 1.5rem;
+        }
+
+        header h1 {
+            font-size: 1.4rem;
+            color: #2c3e50;
+        }
+
+        #account-info {
+            font-size: 0.8rem;
+            color: #777;
+            word-break: break-all;
+            text-align: right;
+        }
+
+        #status-bar {
+            text-align: center;
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            margin: 0 auto 1.5rem;
+            max-width: 600px;
+            font-size: 0.9rem;
+            background: #eaf4fb;
+            color: #2980b9;
+            border: 1px solid #aed6f1;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            max-width: 600px;
+            margin: 0 auto 1.5rem;
+        }
+
+        h2 {
+            margin-bottom: 1rem;
+            color: #34495e;
+            font-size: 1.1rem;
+        }
+
+        /* ─── Candidate Cards ─────────────────────────────────────── */
+        .candidate-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .candidate-card {
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 1rem 1.2rem;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .candidate-card:hover {
+            border-color: #3498db;
+            background: #f0f8ff;
+        }
+
+        .candidate-card.selected {
+            border-color: #3498db;
+            background: #eaf4fb;
+        }
+
+        .candidate-card.selected::after {
+            content: "✔";
+            color: #3498db;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .candidate-name {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        button {
+            width: 100%;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        button:hover {
+            opacity: 0.85;
+        }
+
+        button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-logout {
+            background: #95a5a6;
+            color: white;
+            width: auto;
+            padding: 0.4rem 1rem;
+            font-size: 0.85rem;
+        }
+
+        /* ─── Voted State ─────────────────────────────────────────── */
+        #voted-message {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+            color: #1e8449;
+        }
+
+        #voted-message .checkmark {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        #voted-message h2 {
+            color: #1e8449;
+            font-size: 1.3rem;
+        }
+
+        #voted-message p {
+            color: #777;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        /* ─── Voting Closed State ─────────────────────────────────── */
+        #closed-message {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+            color: #922b21;
+        }
+
+        #closed-message .icon {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* ─── Status Badge ────────────────────────────────────────── */
+        #voting-status {
+            display: inline-block;
+            padding: 0.3rem 0.9rem;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .status-open {
+            background: #d5f5e3;
+            color: #1e8449;
+        }
+
+        .status-closed {
+            background: #fadbd8;
+            color: #922b21;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>🗳️ Cast Your Vote</h1>
+        <div>
+            <div id="account-info"></div>
+            <button class="btn-logout" onclick="logout()">Logout</button>
+        </div>
+    </header>
+
+    <div id="status-bar">Loading...</div>
+
+    <!-- ─── Voting Card ──────────────────────────────────────────── -->
+    <div class="card" id="vote-card">
+        <h2>Select a Candidate</h2>
+        <span id="voting-status" class="status-closed">Closed</span>
+        <div class="candidate-list" id="candidate-list">
+            <p style="color:#aaa">Loading candidates...</p>
+        </div>
+    </div>
+
+    <!-- ─── Submit Button ───────────────────────────────────────── -->
+    <div style="max-width:600px; margin: 0 auto;">
+        <button class="btn-primary" id="vote-btn" onclick="castVote()" disabled>
+            Submit Vote
+        </button>
+    </div>
+
+    <!-- ─── Already Voted Message ───────────────────────────────── -->
+    <div class="card" id="voted-message">
+        <div class="checkmark">✅</div>
+        <h2>Vote Submitted!</h2>
+        <p>Your vote has been recorded on the blockchain.</p>
+        <p style="margin-top:0.5rem; font-size:0.8rem; color:#aaa;">
+            Each account can only vote once.
+        </p>
+    </div>
+
+    <!-- ─── Voting Closed Message ────────────────────────────────── -->
+    <div class="card" id="closed-message">
+        <div class="icon">🔒</div>
+        <h2>Voting is Closed</h2>
+        <p style="color:#777; font-size:0.9rem; margin-top:0.5rem;">
+            Please wait for the admin to open the voting session.
+        </p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.10.0/dist/web3.min.js"></script>
+    <script>
+        // ─── Config ───────────────────────────────────────────────────────
+        const ADMIN_ADDRESS = "0x91ef41A5B8F2A4F8FD15C9df45293925524A8558".toLowerCase();
+
+        const ABI = [
+            { "inputs": [], "stateMutability": "nonpayable", "type": "constructor" },
+            { "inputs": [{ "internalType": "string", "name": "name", "type": "string" }], "name": "addCandidate", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
+            { "inputs": [], "name": "openVoting", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
+            { "inputs": [], "name": "closeVoting", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
+            { "inputs": [{ "internalType": "uint256", "name": "candidateIndex", "type": "uint256" }], "name": "vote", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
+            { "inputs": [{ "internalType": "uint256", "name": "index", "type": "uint256" }], "name": "getCandidate", "outputs": [{ "internalType": "string", "name": "name", "type": "string" }, { "internalType": "uint256", "name": "voteCount", "type": "uint256" }], "stateMutability": "view", "type": "function" },
+            { "inputs": [], "name": "getCandidateCount", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" },
+            { "inputs": [], "name": "votingOpen", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "view", "type": "function" },
+            { "inputs": [], "name": "admin", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" },
+            { "inputs": [{ "internalType": "address", "name": "", "type": "address" }], "name": "hasVoted", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "view", "type": "function" }
+        ];
+
+        // ─── Globals ──────────────────────────────────────────────────────
+        let web3, contract, currentAccount, selectedIndex = null;
+
+        // ─── Init ─────────────────────────────────────────────────────────
+        async function init() {
+            // Redirect to login if no session
+            currentAccount = sessionStorage.getItem("account");
+            if (!currentAccount) return window.location.href = "index.html";
+
+            // Redirect admin to admin page
+            if (currentAccount.toLowerCase() === ADMIN_ADDRESS) {
+                return window.location.href = "admin.html";
+            }
+
+            try {
+                web3 = new Web3("http://127.0.0.1:8545");
+
+                // Dynamically load contract address from Truffle build artifact
+                const response = await fetch("/contracts/Voting.json");
+                const artifact = await response.json();
+                const networkId = await web3.eth.net.getId();
+                const contractAddress = artifact.networks[networkId]?.address;
+                if (!contractAddress) throw new Error("Contract not deployed on this network");
+
+                contract = new web3.eth.Contract(ABI, contractAddress);
+
+                document.getElementById("account-info").textContent =
+                    `Account: ${currentAccount.slice(0, 10)}...`;
+
+                await loadVotingState();
+
+            } catch (err) {
+                setStatus("❌ " + err.message);
+            }
+        }
+
+        // ─── Load Voting State ────────────────────────────────────────────
+        async function loadVotingState() {
+            const isOpen = await contract.methods.votingOpen().call();
+            const alreadyVoted = await contract.methods.hasVoted(currentAccount).call();
+
+            const badge = document.getElementById("voting-status");
+            badge.textContent = isOpen ? "Open" : "Closed";
+            badge.className = "status-" + (isOpen ? "open" : "closed");
+
+            if (alreadyVoted) { showVotedState(); return; }
+            if (!isOpen) { showClosedState(); return; }
+
+            setStatus("Connected ✅ — Select a candidate below.");
+            await loadCandidates();
+        }
+
+        // ─── Load Candidates ──────────────────────────────────────────────
+        async function loadCandidates() {
+            const count = await contract.methods.getCandidateCount().call();
+            const list = document.getElementById("candidate-list");
+            list.innerHTML = "";
+
+            if (count === "0" || count === 0) {
+                list.innerHTML = '<p style="color:#aaa">No candidates added yet.</p>';
+                return;
+            }
+
+            for (let i = 0; i < count; i++) {
+                const c = await contract.methods.getCandidate(i).call();
+                const card = document.createElement("div");
+                card.className = "candidate-card";
+                card.dataset.index = i;
+                card.innerHTML = `<span class="candidate-name">${c.name}</span>`;
+                card.onclick = () => selectCandidate(i, card);
+                list.appendChild(card);
+            }
+
+            document.getElementById("vote-btn").disabled = false;
+        }
+
+        // ─── Select Candidate ─────────────────────────────────────────────
+        function selectCandidate(index, cardEl) {
+            document.querySelectorAll(".candidate-card").forEach(c => c.classList.remove("selected"));
+            cardEl.classList.add("selected");
+            selectedIndex = index;
+        }
+
+        // ─── Cast Vote ────────────────────────────────────────────────────
+        async function castVote() {
+            if (selectedIndex === null) return setStatus("❌ Please select a candidate.");
+
+            try {
+                setStatus("Submitting vote...");
+                document.getElementById("vote-btn").disabled = true;
+                await contract.methods.vote(selectedIndex).send({ from: currentAccount });
+                showVotedState();
+            } catch (err) {
+                setStatus("❌ " + (err.reason || err.message));
+                document.getElementById("vote-btn").disabled = false;
+            }
+        }
+
+        // ─── UI States ────────────────────────────────────────────────────
+        function showVotedState() {
+            document.getElementById("vote-card").style.display = "none";
+            document.getElementById("vote-btn").style.display = "none";
+            document.getElementById("voted-message").style.display = "block";
+            document.getElementById("closed-message").style.display = "none";
+            setStatus("✅ Your vote is recorded on the blockchain.");
+        }
+
+        function showClosedState() {
+            document.getElementById("vote-card").style.display = "none";
+            document.getElementById("vote-btn").style.display = "none";
+            document.getElementById("closed-message").style.display = "block";
+            setStatus("🔒 Voting is currently closed.");
+        }
+
+        // ─── Helpers ──────────────────────────────────────────────────────
+        function setStatus(msg) {
+            document.getElementById("status-bar").textContent = msg;
+        }
+
+        function logout() {
+            sessionStorage.clear();
+            window.location.href = "index.html";
+        }
+
+        init();
+    </script>
+</body>
+
+</html>

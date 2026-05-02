@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin — Voting System</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f0f2f5;
+            color: #333;
+            padding: 2rem;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 900px;
+            margin: 0 auto 1.5rem;
+        }
+
+        header h1 {
+            font-size: 1.4rem;
+            color: #2c3e50;
+        }
+
+        #account-info {
+            font-size: 0.8rem;
+            color: #777;
+            word-break: break-all;
+            text-align: right;
+        }
+
+        #status-bar {
+            text-align: center;
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            margin: 0 auto 1.5rem;
+            max-width: 900px;
+            font-size: 0.9rem;
+            background: #eaf4fb;
+            color: #2980b9;
+            border: 1px solid #aed6f1;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .card.full-width {
+            grid-column: 1 / -1;
+        }
+
+        h2 {
+            margin-bottom: 1rem;
+            color: #34495e;
+            font-size: 1.1rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.6rem 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            margin-bottom: 0.8rem;
+        }
+
+        button {
+            width: 100%;
+            padding: 0.65rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: opacity 0.2s;
+            margin-bottom: 0.5rem;
+        }
+
+        button:hover {
+            opacity: 0.85;
+        }
+
+        button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-success {
+            background: #2ecc71;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-logout {
+            background: #95a5a6;
+            color: white;
+            width: auto;
+            padding: 0.4rem 1rem;
+            font-size: 0.85rem;
+        }
+
+        #voting-status {
+            display: inline-block;
+            padding: 0.3rem 0.9rem;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .status-open {
+            background: #d5f5e3;
+            color: #1e8449;
+        }
+
+        .status-closed {
+            background: #fadbd8;
+            color: #922b21;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+        }
+
+        th {
+            text-align: left;
+            padding: 0.6rem 0.8rem;
+            background: #f8f9fa;
+            border-bottom: 2px solid #dee2e6;
+            color: #555;
+        }
+
+        td {
+            padding: 0.6rem 0.8rem;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .vote-bar-wrap {
+            background: #f0f0f0;
+            border-radius: 999px;
+            height: 10px;
+            margin-top: 4px;
+        }
+
+        .vote-bar {
+            background: #3498db;
+            height: 10px;
+            border-radius: 999px;
+            transition: width 0.4s ease;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>⚙️ Admin Panel</h1>
+        <div>
+            <div id="account-info"></div>
+            <button class="btn-logout" onclick="logout()">Logout</button>
+        </div>
+    </header>
+
+    <div id="status-bar">Loading...</div>
+
+    <div class="grid">
+
+        <!-- ─── Add Candidate ─────────────────────────────────────── -->
+        <div class="card">
+            <h2>➕ Add Candidate</h2>
+            <input type="text" id="candidate-name" placeholder="Candidate name" />
+            <button class="btn-primary" onclick="addCandidate()">Add Candidate</button>
+        </div>
+
+        <!-- ─── Voting Control ────────────────────────────────────── -->
+        <div class="card">
+            <h2>⚙️ Voting Control</h2>
+            <span id="voting-status" class="status-closed">Closed</span>
+            <button class="btn-success" onclick="openVoting()">Open Voting</button>
+            <button class="btn-danger" onclick="closeVoting()">Close Voting</button>
+        </div>
+
+        <!-- ─── Live Results ──────────────────────────────────────── -->
+        <div class="card full-width">
+            <h2>📊 Live Results</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Candidate</th>
+                        <th>Votes</th>
+                    </tr>
+                </thead>
+                <tbody id="results-body">
+                    <tr>
+                        <td colspan="3" style="color:#aaa">No candidates yet</td>
+                    </tr>
+                </tbody>
+            </table>
+            <button class="btn-primary" style="margin-top:1rem" onclick="loadResults()">🔄 Refresh</button>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.10.0/dist/web3.min.js"></script>
+    <script>
+        // ─── Config ───────────────────────────────────────────────────────
+        const ADMIN_ADDRESS = "0x91ef41A5B8F2A4F8FD15C9df45293925524A8558".toLowerCase();
+
+        const ABI = [
+            { "inputs": [], "stateMutability": "nonpayable", "type": "constructor" },
+            { "inputs": [{ "internalType": "string", "name": "name", "type": "string" }], "name": "addCandidate", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
+            { "inputs": [], "name": "openVoting", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
+            { "inputs": [], "name": "closeVoting", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
+            { "inputs": [{ "internalType": "uint256", "name": "candidateIndex", "type": "uint256" }], "name": "vote", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
+            { "inputs": [{ "internalType": "uint256", "name": "index", "type": "uint256" }], "name": "getCandidate", "outputs": [{ "internalType": "string", "name": "name", "type": "string" }, { "internalType": "uint256", "name": "voteCount", "type": "uint256" }], "stateMutability": "view", "type": "function" },
+            { "inputs": [], "name": "getCandidateCount", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" },
+            { "inputs": [], "name": "votingOpen", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "view", "type": "function" },
+            { "inputs": [], "name": "admin", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" },
+            { "inputs": [{ "internalType": "address", "name": "", "type": "address" }], "name": "hasVoted", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "view", "type": "function" }
+        ];
+
+        // ─── Globals ──────────────────────────────────────────────────────
+        let web3, contract, currentAccount;
+
+        // ─── Init ─────────────────────────────────────────────────────────
+        async function init() {
+            // Redirect to login if no session
+            currentAccount = sessionStorage.getItem("account");
+            if (!currentAccount) return window.location.href = "index.html";
+
+            // Redirect non-admins to voter page
+            if (currentAccount.toLowerCase() !== ADMIN_ADDRESS) {
+                return window.location.href = "voter.html";
+            }
+
+            try {
+                web3 = new Web3("http://127.0.0.1:8545");
+
+                // Dynamically load contract address from Truffle build artifact
+                const response = await fetch("/contracts/Voting.json");
+                const artifact = await response.json();
+                const networkId = await web3.eth.net.getId();
+                const contractAddress = artifact.networks[networkId]?.address;
+                if (!contractAddress) throw new Error("Contract not deployed on this network");
+
+                contract = new web3.eth.Contract(ABI, contractAddress);
+
+                document.getElementById("account-info").textContent = `Admin: ${currentAccount}`;
+                setStatus("Connected as Admin ✅");
+                await loadResults();
+                await updateVotingStatus();
+
+            } catch (err) {
+                setStatus("❌ " + err.message);
+            }
+        }
+
+        // ─── Admin Functions ──────────────────────────────────────────────
+        async function addCandidate() {
+            const name = document.getElementById("candidate-name").value.trim();
+            if (!name) return setStatus("❌ Enter a candidate name.");
+            try {
+                setStatus("Adding candidate...");
+                await contract.methods.addCandidate(name).send({ from: currentAccount });
+                document.getElementById("candidate-name").value = "";
+                setStatus(`✅ "${name}" added.`);
+                await loadResults();
+            } catch (err) {
+                setStatus("❌ " + (err.reason || err.message));
+            }
+        }
+
+        async function openVoting() {
+            try {
+                setStatus("Opening voting...");
+                await contract.methods.openVoting().send({ from: currentAccount });
+                setStatus("✅ Voting is now open.");
+                await updateVotingStatus();
+            } catch (err) {
+                setStatus("❌ " + (err.reason || err.message));
+            }
+        }
+
+        async function closeVoting() {
+            try {
+                setStatus("Closing voting...");
+                await contract.methods.closeVoting().send({ from: currentAccount });
+                setStatus("✅ Voting is now closed.");
+                await updateVotingStatus();
+            } catch (err) {
+                setStatus("❌ " + (err.reason || err.message));
+            }
+        }
+
+        // ─── Results ──────────────────────────────────────────────────────
+        async function loadResults() {
+            try {
+                const count = await contract.methods.getCandidateCount().call();
+                const tbody = document.getElementById("results-body");
+                tbody.innerHTML = "";
+
+                if (count === "0" || count === 0) {
+                    tbody.innerHTML = '<tr><td colspan="3" style="color:#aaa">No candidates yet</td></tr>';
+                    return;
+                }
+
+                const candidates = [];
+                for (let i = 0; i < count; i++) {
+                    const c = await contract.methods.getCandidate(i).call();
+                    candidates.push({ index: i, name: c.name, votes: parseInt(c.voteCount) });
+                }
+
+                const totalVotes = candidates.reduce((sum, c) => sum + c.votes, 0);
+
+                candidates.forEach(c => {
+                    const pct = totalVotes > 0 ? Math.round((c.votes / totalVotes) * 100) : 0;
+                    tbody.innerHTML += `
+        <tr>
+          <td>${c.index}</td>
+          <td>${c.name}</td>
+          <td>
+            ${c.votes}
+            <div class="vote-bar-wrap">
+              <div class="vote-bar" style="width:${pct}%"></div>
+            </div>
+          </td>
+        </tr>`;
+                });
+            } catch (err) {
+                setStatus("❌ Failed to load results: " + err.message);
+            }
+        }
+
+        async function updateVotingStatus() {
+            const isOpen = await contract.methods.votingOpen().call();
+            const badge = document.getElementById("voting-status");
+            badge.textContent = isOpen ? "Open" : "Closed";
+            badge.className = "status-" + (isOpen ? "open" : "closed");
+        }
+
+        // ─── Helpers ──────────────────────────────────────────────────────
+        function setStatus(msg) {
+            document.getElementById("status-bar").textContent = msg;
+        }
+
+        function logout() {
+            sessionStorage.clear();
+            window.location.href = "index.html";
+        }
+
+        init();
+    </script>
+</body>
+
+</html>

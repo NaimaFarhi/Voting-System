@@ -1,0 +1,20 @@
+{
+  "name": "voting-system",
+  "version": "1.0.0",
+  "main": "truffle-config.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "copy-abi": "cp build/contracts/Voting.json client/contracts/Voting.json"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "serve": "^14.2.6",
+    "web3": "^4.16.0"
+  }
+}

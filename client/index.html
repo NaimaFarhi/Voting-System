@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Voting System</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f2f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 2.5rem;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      max-width: 420px;
+      width: 100%;
+    }
+
+    h1 {
+      font-size: 1.6rem;
+      color: #2c3e50;
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      color: #777;
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+    }
+
+    #status {
+      font-size: 0.85rem;
+      color: #e74c3c;
+      margin-bottom: 1rem;
+      min-height: 1.2rem;
+    }
+
+    /* Account selector */
+    select {
+      width: 100%;
+      padding: 0.65rem 0.8rem;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+      color: #333;
+    }
+
+    button {
+      width: 100%;
+      padding: 0.75rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      background: #3498db;
+      color: white;
+      transition: opacity 0.2s;
+    }
+
+    button:hover {
+      opacity: 0.85;
+    }
+
+    button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+    <h1>🗳️ Voting System</h1>
+    <p>Select your account to continue</p>
+    <div id="status">Connecting to Ganache...</div>
+
+    <!-- Account dropdown populated from Ganache -->
+    <select id="account-select">
+      <option value="">-- Loading accounts... --</option>
+    </select>
+
+    <button onclick="enter()" id="enter-btn" disabled>Enter</button>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/web3@1.10.0/dist/web3.min.js"></script>
+  <script>
+    // ─── Config ───────────────────────────────────────────────────────
+    // Account 0 is always admin (matches contract deployer)
+    const ADMIN_ADDRESS = "0x91ef41A5B8F2A4F8FD15C9df45293925524A8558".toLowerCase();
+
+    let web3, accounts;
+
+    // ─── Init ─────────────────────────────────────────────────────────
+    async function init() {
+      try {
+        web3 = new Web3("http://127.0.0.1:8545");
+        accounts = await web3.eth.getAccounts();
+
+        const select = document.getElementById("account-select");
+        select.innerHTML = '<option value="">-- Select an account --</option>';
+
+        // Populate dropdown — label account 0 as Admin
+        accounts.forEach((acc, i) => {
+          const label = i === 0 ? `Account ${i} (Admin) — ${acc}` : `Account ${i} — ${acc}`;
+          select.innerHTML += `<option value="${acc}">${label}</option>`;
+        });
+
+        document.getElementById("status").textContent = "";
+        document.getElementById("enter-btn").disabled = false;
+
+      } catch (err) {
+        document.getElementById("status").textContent =
+          "❌ Could not connect to Ganache. Is it running on port 8545?";
+      }
+    }
+
+    // ─── Enter ────────────────────────────────────────────────────────
+    function enter() {
+  const selected = document.getElementById("account-select").value;
+  console.log("Selected:", selected);
+  console.log("Admin:", ADMIN_ADDRESS);
+  console.log("Match:", selected.toLowerCase() === ADMIN_ADDRESS);
+  if (!selected) return;
+
+  sessionStorage.setItem("account", selected);
+
+  if (selected.toLowerCase() === ADMIN_ADDRESS) {
+    window.location.href = "admin.html";
+  } else {
+    window.location.href = "voter.html";
+  }
+}
+
+    init();
+  </script>
+</body>
+
+</html>
