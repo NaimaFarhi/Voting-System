@@ -1,0 +1,104 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Cas d'utilisation - Système de vote Blockchain" id="use-case-voting">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- Cadre du système -->
+        <mxCell id="system-boundary" value="Système de Vote Blockchain" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontStyle=1;verticalAlign=top;align=center;verticalLabelPosition=top;container=1;recursiveResize=0;" parent="1" vertex="1">
+          <mxGeometry x="270" y="140" width="460" height="600" as="geometry" />
+        </mxCell>
+        
+        <!-- Cas d'utilisation : Consulter résultats -->
+        <mxCell id="uc-results" value="Consulter résultats&#xa;en temps réel" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" parent="system-boundary" vertex="1">
+          <mxGeometry x="270" y="520" width="140" height="55" as="geometry" />
+        </mxCell>
+        
+        <!-- Cas d'utilisation : Ajouter candidat -->
+        <mxCell id="uc-add-candidate" value="Ajouter un candidat" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" parent="system-boundary" vertex="1">
+          <mxGeometry x="50" y="270" width="140" height="55" as="geometry" />
+        </mxCell>
+        
+        <!-- Cas d'utilisation : Ouvrir session -->
+        <mxCell id="uc-open" value="Ouvrir la session&#xa;de vote" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" parent="system-boundary" vertex="1">
+          <mxGeometry x="50" y="360" width="140" height="55" as="geometry" />
+        </mxCell>
+        
+        <!-- Cas d'utilisation : Fermer session -->
+        <mxCell id="uc-close" value="Fermer la session&#xa;de vote" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" parent="system-boundary" vertex="1">
+          <mxGeometry x="50" y="450" width="140" height="55" as="geometry" />
+        </mxCell>
+        
+        <!-- Cas d'utilisation : Voter -->
+        <mxCell id="uc-vote" value="Voter pour un&#xa;candidat" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" parent="system-boundary" vertex="1">
+          <mxGeometry x="270" y="270" width="140" height="55" as="geometry" />
+        </mxCell>
+        
+        <!-- Cas d'utilisation : Voir confirmation -->
+        <mxCell id="uc-confirm" value="Voir confirmation&#xa;de vote" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" parent="system-boundary" vertex="1">
+          <mxGeometry x="270" y="360" width="140" height="55" as="geometry" />
+        </mxCell>
+        
+        <!-- Cas d'utilisation : Sélectionner compte -->
+        <mxCell id="uc-select-account" value="Sélectionner son&#xa;compte Ethereum" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" parent="system-boundary" vertex="1">
+          <mxGeometry x="270" y="440" width="140" height="55" as="geometry" />
+        </mxCell>
+        
+        <!-- Cas d'utilisation : Voir liste candidats (inclus dans Voter) -->
+        <mxCell id="uc-list-candidates" value="Voir la liste&#xa;des candidats" style="ellipse;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;dashed=1;" parent="system-boundary" vertex="1">
+          <mxGeometry x="260" y="165" width="120" height="45" as="geometry" />
+        </mxCell>
+        
+        <!-- Acteur Administrateur -->
+        <mxCell id="actor-admin" value="Administrateur" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
+          <mxGeometry x="80" y="530" width="30" height="60" as="geometry" />
+        </mxCell>
+        
+        <!-- Acteur Électeur -->
+        <mxCell id="actor-voter" value="Électeur" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
+          <mxGeometry x="640" y="530" width="30" height="60" as="geometry" />
+        </mxCell>
+        
+        <!-- Liens Administrateur -->
+        <mxCell id="link-admin-add" style="endArrow=none;html=1;rounded=0;" parent="1" source="actor-admin" target="uc-add-candidate" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="link-admin-open" style="endArrow=none;html=1;rounded=0;" parent="1" source="actor-admin" target="uc-open" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="link-admin-close" style="endArrow=none;html=1;rounded=0;" parent="1" source="actor-admin" target="uc-close" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="link-admin-results" style="endArrow=none;html=1;rounded=0;" parent="1" source="actor-admin" target="uc-results" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Liens Électeur -->
+        <mxCell id="link-voter-vote" style="endArrow=none;html=1;rounded=0;" parent="1" source="actor-voter" target="uc-vote" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="link-voter-confirm" style="endArrow=none;html=1;rounded=0;" parent="1" source="actor-voter" target="uc-confirm" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="link-voter-select" style="endArrow=none;html=1;rounded=0;" parent="1" source="actor-voter" target="uc-select-account" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Liens d'inclusion (include) -->
+        <mxCell id="link-include-vote-list" value="&lt;&lt;include&gt;&gt;" style="endArrow=open;html=1;rounded=0;dashed=1;fontSize=9;fontColor=#7F00FF;" parent="1" source="uc-vote" target="uc-list-candidates" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Lien de contrainte (note) -->
+        <mxCell id="note-constraint" value="Contrainte : Unicité du vote&#xa;enforced par le smart contract&#xa;(hasVoted[address] = true)" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=10;align=left;verticalAlign=top;size=16;" parent="1" vertex="1">
+          <mxGeometry x="50" y="670" width="220" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="link-constraint" style="endArrow=open;html=1;rounded=0;dashed=1;fontSize=9;" parent="1" source="note-constraint" target="uc-vote" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

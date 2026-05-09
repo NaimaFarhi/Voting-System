@@ -1,0 +1,150 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Diagramme de séquence - Connexion et redirection" id="seq-connection">
+    <mxGraphModel dx="1200" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="750" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ========== LIFELINES ========== -->
+
+        <!-- Utilisateur -->
+        <mxCell id="lifeline-user" value="Utilisateur" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fontStyle=1;fillColor=#d5e8d4;strokeColor=#82b366;size=20;" parent="1" vertex="1">
+          <mxGeometry x="65" y="80" width="100" height="600" as="geometry" />
+        </mxCell>
+
+        <!-- Frontend (index.html) -->
+        <mxCell id="lifeline-frontend" value="Frontend&#xa;(index.html)" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fontStyle=1;fillColor=#dae8fc;strokeColor=#6c8ebf;size=20;" parent="1" vertex="1">
+          <mxGeometry x="255" y="80" width="100" height="600" as="geometry" />
+        </mxCell>
+
+        <!-- Ganache (RPC Provider) -->
+        <mxCell id="lifeline-ganache" value="Ganache&#xa;(Port 8545)" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fontStyle=1;fillColor=#f8cecc;strokeColor=#b85450;size=20;" parent="1" vertex="1">
+          <mxGeometry x="445" y="80" width="100" height="600" as="geometry" />
+        </mxCell>
+
+        <!-- Smart Contract -->
+        <mxCell id="lifeline-contract" value="Smart Contract&#xa;(Voting.sol)" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fontStyle=1;fillColor=#e1d5e7;strokeColor=#9673a6;size=20;" parent="1" vertex="1">
+          <mxGeometry x="635" y="80" width="100" height="600" as="geometry" />
+        </mxCell>
+
+        <!-- admin.html -->
+        <mxCell id="lifeline-admin" value="admin.html" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fontStyle=1;fillColor=#fff2cc;strokeColor=#d6b656;size=20;" parent="1" vertex="1">
+          <mxGeometry x="825" y="80" width="100" height="600" as="geometry" />
+        </mxCell>
+
+        <!-- voter.html -->
+        <mxCell id="lifeline-voter" value="voter.html" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fontStyle=1;fillColor=#fff2cc;strokeColor=#d6b656;size=20;" parent="1" vertex="1">
+          <mxGeometry x="970" y="80" width="100" height="600" as="geometry" />
+        </mxCell>
+
+        <!-- ========== MESSAGES ========== -->
+
+        <!-- 1. L'utilisateur accède à l'application -->
+        <mxCell id="msg1" value="1. Accède à l'application" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;fontSize=10;" parent="1" source="lifeline-user" target="lifeline-frontend" edge="1">
+          <mxGeometry x="-0.2" y="20" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 2. Frontend se connecte à Ganache -->
+        <mxCell id="msg2" value="2. Connexion Web3 (RPC : localhost:8545)" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;fontSize=10;" parent="1" source="lifeline-frontend" target="lifeline-ganache" edge="1">
+          <mxGeometry x="-0.2" y="20" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 3. Récupération des comptes -->
+        <mxCell id="msg3" value="3. web3.eth.getAccounts()" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;fontSize=10;" parent="1" source="lifeline-frontend" target="lifeline-ganache" edge="1">
+          <mxGeometry x="-0.2" y="20" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 4. Retour de la liste des comptes -->
+        <mxCell id="msg4" value="4. Liste des comptes [0xAbc..., 0xDef..., ...]" style="html=1;verticalAlign=bottom;endArrow=open;rounded=0;fontSize=10;dashed=1;" parent="1" source="lifeline-ganache" target="lifeline-frontend" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 5. Affichage de la liste déroulante -->
+        <mxCell id="msg5" value="5. Affiche la liste déroulante des comptes" style="html=1;verticalAlign=bottom;endArrow=open;rounded=0;fontSize=10;dashed=1;" parent="1" source="lifeline-frontend" target="lifeline-user" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 6. L'utilisateur sélectionne un compte -->
+        <mxCell id="msg6" value="6. Sélectionne un compte et clique sur &quot;Entrer&quot;" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;fontSize=10;" parent="1" source="lifeline-user" target="lifeline-frontend" edge="1">
+          <mxGeometry x="-0.2" y="20" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 7. Stockage de l'adresse dans sessionStorage -->
+        <mxCell id="self-msg1" value="7. Stocke l'adresse dans sessionStorage" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;fontSize=9;" parent="1" source="lifeline-frontend" target="lifeline-frontend" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="375" y="475" />
+              <mxPoint x="375" y="475" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 8. Comparaison avec l'adresse admin -->
+        <mxCell id="msg8" value="8. admin() [vérification on-chain de l'admin]" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;fontSize=10;" parent="1" source="lifeline-frontend" target="lifeline-contract" edge="1">
+          <mxGeometry x="-0.2" y="20" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 9. Retour adresse admin -->
+        <mxCell id="msg9" value="9. Adresse admin : 0xAbc..." style="html=1;verticalAlign=bottom;endArrow=open;rounded=0;fontSize=10;dashed=1;" parent="1" source="lifeline-contract" target="lifeline-frontend" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 10. Alt frame : Test si admin ou électeur -->
+        <mxCell id="alt-frame" value="alt" style="shape=umlFrame;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;dashed=1;fontStyle=1;fontSize=10;container=1;recursiveResize=0;" parent="1" vertex="1">
+          <mxGeometry x="240" y="530" width="830" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- Branche [Admin] -->
+        <mxCell id="alt-admin-branch" value="[adresse sélectionnée == admin]" style="shape=umlFrame;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;dashed=1;fontSize=9;fontStyle=1;container=1;recursiveResize=0;" parent="1" vertex="1">
+          <mxGeometry x="255" y="540" width="400" height="105" as="geometry" />
+        </mxCell>
+
+        <mxCell id="msg10a" value="10a. Redirection vers admin.html" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;fontSize=10;" parent="1" source="lifeline-frontend" target="lifeline-admin" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="485" y="575" as="sourcePoint" />
+            <mxPoint x="875" y="575" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Branche [Électeur] -->
+        <mxCell id="alt-voter-branch" value="[adresse sélectionnée != admin]" style="shape=umlFrame;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;dashed=1;fontSize=9;fontStyle=1;container=1;recursiveResize=0;" parent="1" vertex="1">
+          <mxGeometry x="660" y="540" width="400" height="105" as="geometry" />
+        </mxCell>
+
+        <mxCell id="msg10b" value="10b. Redirection vers voter.html" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;fontSize=10;" parent="1" source="lifeline-frontend" target="lifeline-voter" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="485" y="595" as="sourcePoint" />
+            <mxPoint x="1020" y="595" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ========== NOTES EXPLICATIVES ========== -->
+
+        <mxCell id="note1" value="La liste des comptes est&#xa;récupérée depuis Ganache&#xa;(10 comptes pré-fundés)" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=9;align=left;verticalAlign=top;size=16;" parent="1" vertex="1">
+          <mxGeometry x="520" y="380" width="160" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="dash-note1" style="endArrow=none;html=1;rounded=0;dashed=1;fontSize=9;" parent="1" source="note1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="520" y="380" as="sourcePoint" />
+            <mxPoint x="520" y="350" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="note2" value="L'adresse admin est stockée&#xa;dans le smart contract lors&#xa;du déploiement (msg.sender)" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=9;align=left;verticalAlign=top;size=16;" parent="1" vertex="1">
+          <mxGeometry x="715" y="465" width="170" height="55" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
